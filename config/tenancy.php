@@ -46,7 +46,7 @@ return [
         /**
          * Connection used as a "template" for the tenant database connection.
          */
-        'template_tenant_connection' => null,
+        'template_tenant_connection' => ['driver' => 'mysql'],
 
         /**
          * Tenant database names are created like this:
