@@ -12,7 +12,7 @@
 
 <script>
 // @ is an alias to /src
-import Navbar from '../../components/dashboard/Navbar.vue';
+import Navbar from './components/dashboard/Navbar.vue';
 
 export default {
   name: 'Dashboard',
