@@ -52,7 +52,7 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'http://shops.test'),
+    'url' => env('APP_URL', 'http://unnamedmerce.herokuapp.com'),
 
     'asset_url' => env('ASSET_URL', null),
 

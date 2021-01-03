@@ -17,8 +17,6 @@ return [
      * Only relevant if you're using the domain or subdomain identification middleware.
      */
     'central_domains' => [
-      'shops.test',
-      '127.0.0.1',
       'unnamedmerce.herokuapp.com'
 
     ],
