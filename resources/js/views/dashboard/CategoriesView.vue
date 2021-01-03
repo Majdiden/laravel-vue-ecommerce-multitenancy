@@ -49,7 +49,7 @@
 </template>
 
 <script>
-import SidePanel from '@/js/components/dashboard/SidePanel.vue';
+import SidePanel from '../components/dashboard/SidePanel.vue';
 import {mapState} from 'vuex';
   export default {
     data(){
