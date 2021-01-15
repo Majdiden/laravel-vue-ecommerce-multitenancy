@@ -15,11 +15,11 @@ return [
     |
     */
 
-    'paths' => ['api/*', '/login'],
+    'paths' => ['api/*', '/login', 'api/create'],
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['*.shops.test','shops.test'],
+    'allowed_origins' => ['http://shops.test'],
 
     'allowed_origins_patterns' => [],
 

@@ -8,6 +8,7 @@ use App\Tenant;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Hash;
 
 class LoginController extends Controller
 {
@@ -21,14 +22,16 @@ $request->validate([
           'remember_me' => 'boolean'
       ]);
 
-      if(!Auth::attempt($request->only('email', 'password'))) {
-        /*  return response()->json([
-              'message' => 'Authorization failed'
-          ], 401); */
-          throw ValidationException::withMessages(['email' => 'email is incorrect', 'password' => 'password is incorrect']);
-        }
-        $user = Auth::user();
-        return $user->createToken('store-owner')->plainTextToken;
+      $user = User::where('email', $request->email)->first();
+
+         if (! $user || ! Hash::check($request->password, $user->password)) {
+             throw ValidationException::withMessages([
+                 'email' => ['The provided credentials are incorrect.'],
+             ]);
+         }
+         $token = $user->createToken('Store Owner')->plainTextToken;
+          $data = ['token' => $token];
+        return $data['token'];
   }
 
   public function logout (Request $request) {

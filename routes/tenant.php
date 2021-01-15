@@ -40,6 +40,7 @@ Route::middleware([
     Route::get('/dashboard/welcome', 'StoreView@loadStoreData')->name('welcome');
     Route::get('/login', 'StoreView@index');
 
+
 });
 
  Route::prefix('api')->middleware([
@@ -47,7 +48,6 @@ Route::middleware([
   InitializeTenancyByDomain::class,
   PreventAccessFromCentralDomains::class
 ])->group(function(){
-
   Route::post('/login', 'LoginController@login')->name('login');
 });
 

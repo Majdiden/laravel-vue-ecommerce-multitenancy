@@ -111,6 +111,7 @@
 
 <script>
 import {mapState} from 'vuex';
+import {mapActions} from 'vuex';
 
 export default{
   data(){
@@ -126,8 +127,8 @@ export default{
   },
 
   mounted(){
-    this.$store.dispatch('getCart'),
-    this.getCartItems(),
+    this.$store.dispatch('store/getCart')
+    this.getCartItems()
     console.log(this.carts)
   },
 
@@ -141,16 +142,16 @@ export default{
     },
 
     placeOrder(){
-      this.$store.dispatch('placeOrder', this.order)
+      this.$store.dispatch('store/placeOrder', this.order)
       console.log(this.order)
     }
 
   },
 
   computed: {
-    ...mapState([
+    ...mapState('store', [
       'carts'
-    ])
+     ])
   }
 }
 

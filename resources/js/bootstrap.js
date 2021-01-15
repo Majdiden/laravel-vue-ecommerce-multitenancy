@@ -20,10 +20,10 @@ try {
  */
 
 window.axios = require('axios');
-
+window.axios.defaults.withCredentials = true;
 window.axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
- window.  axios.defaults.headers.post['Access-Control-Allow-Origin'] = ['*.shops.test', 'shops.test'];
+window.axios.defaults.headers.post['Access-Control-Allow-Origin'] = ['*.shops.test', 'shops.test'];
 
 /**
  * Echo exposes an expressive API for subscribing to channels and listening

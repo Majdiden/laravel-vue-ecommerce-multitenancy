@@ -25,6 +25,14 @@ class CreateStore extends Controller
 
       $store->save();
 
+      tenancy()->initialize($store);
+
+      $user = User::create([
+        'name' => $request->name,
+        'email' => $request->email,
+        'password' => Hash::make($request->password)
+      ]);
+
     return redirect(tenant_route($domain, 'welcome'));
     }
 
@@ -35,13 +43,13 @@ class CreateStore extends Controller
             'email' => 'required|email',
             'password' => 'required'
         ]);
-        User::create([
+      $user = User::create([
           'name' => $request->name,
           'email' => $request->email,
           'password' => Hash::make($request->password)
         ]);
 
-
+        $user->save();
         return response()->json(['message'=> 'user created successfully'],201);
     }
 

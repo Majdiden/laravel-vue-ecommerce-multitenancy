@@ -7,7 +7,7 @@ import axios from 'axios'
 
 Vue.use(Vuex, axios)
 
-axios.defaults.withCredentials = true;
+
 export default new Vuex.Store({
      //plugins: [vuexLocalStorage.plugin],
 
@@ -44,12 +44,15 @@ export default new Vuex.Store({
                         .catch(error => console.log(error.response.data))
                       },
                       Login({commit}, StoreData) {
-                        axios
-                        .post('api/login', StoreData)
-                        .then(response => {localStorage.setItem("token", response.data);
-                                            router.push({name: 'Stats'});
-                            })
+                        axios.get('/sanctum/csrf-cookie').then(response => {
+
+                          axios
+                          .post('/api/login', StoreData)
+                          .then(response => {localStorage.setItem("token", response.data);
+                          router.push({name: 'Stats'});
+                        })
                         .catch(error => console.log(error.response.data))
+                        })
                       },
                       Logout(){
                         axios

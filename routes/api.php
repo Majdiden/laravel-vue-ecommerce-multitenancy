@@ -24,4 +24,5 @@ Route::middleware('api')->get('/user', function (Request $request) {
 
 Route::post('create', 'CreateStore@create')->name('create');
   Route::post('/signup', 'CreateStore@signup')->name('signup')->middleware('cors');
+
 //Route::post('login', 'LoginController@login')->name('login');

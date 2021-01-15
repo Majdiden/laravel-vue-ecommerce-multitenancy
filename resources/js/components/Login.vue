@@ -73,8 +73,8 @@ export default {
     loading2: false,
     StoreData: {
 
-      email: null,
-      password: null
+      email: '',
+      password: ''
     }
 }
   },
@@ -117,7 +117,7 @@ methods:
     },
 
     CreateStore(StoreData){
-      this.$store.dispatch('tenant/Login', this.StoreData)
+      this.$store.dispatch('tenant/Login', StoreData)
       console.log(this.StoreData)
     }
 }
