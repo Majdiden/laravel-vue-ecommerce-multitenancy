@@ -2,8 +2,10 @@
   <div class="holder">
 
       <Navbar/>
-        <v-main class="blue-grey lighten-5">
-        <router-view></router-view>
+        <v-main class=" main-area">
+          <transition name="fade" mode="out-in">
+            <router-view></router-view>
+          </transition>
       </v-main>
   </div>
 
@@ -13,6 +15,7 @@
 <script>
 // @ is an alias to /src
 import Navbar from '../../components/Dashboard/Navbar.vue';
+import {mapState} from 'vuex';
 
 export default {
   name: 'Dashboard',
@@ -23,7 +26,10 @@ export default {
     return{
       value: [0, 2, 5, 9, 5, 10, 3, 5, 0, 0, 1, 8, 2, 9, 0]
     }
-  }
+  },
+
+
+
 
 }
 </script>
@@ -31,6 +37,17 @@ export default {
 <style scoped>
 .holder{
   z-index: 0;
+}
+.main-area{
+  height: auto;
+  background-color: #F8F8F8;
+}
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .3s ease;
+}
+.fade-enter, .fade-leave-to
+/* .component-fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
 }
 
 </style>

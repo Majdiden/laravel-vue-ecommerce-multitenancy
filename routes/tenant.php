@@ -5,7 +5,7 @@ declare(strict_types=1);
 use Illuminate\Support\Facades\Route;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
-
+use App\Http\Controllers\Menu\MenuController;
 /*
 |--------------------------------------------------------------------------
 | Tenant Routes
@@ -23,13 +23,27 @@ Route::middleware([
     PreventAccessFromCentralDomains::class,
     InitializeTenancyByDomain::class,
 ])->group(function () {
-    Route::get('/', 'StoreView@index');
     Route::get('dashboard/{any}', 'StoreView@index')->where('any', '.*');
     Route::get('dashboard/welcome', 'StoreView@loadStoreData')->name('welcome');
     Route::get('products/{any}', 'StoreView@index')->where('any', '.*');
     Route::get('product/{any}', 'StoreView@index')->where('any', '.*');
-    Route::get('cart', 'StoreView@index');
-    Route::get('checkout', 'StoreView@index');
+    //Get Cart Count Route
+    Route::get('/cart/count', 'ShoppingController@getCartCount');
+
+    // Place Order Routes
+    Route::post('checkout', 'CheckoutController@placeoOrder');
+    // Add to cart Route
+    Route::post('cart/add', [
+      'uses' =>  'ShoppingController@store',
+      'as' => 'cart.add'
+    ]);
+
+      // Cart Data Route
+      Route::get('cart', 'ShoppingController@showItems');
+
+
+
+    Route::any('{any}', 'StoreView@index')->where('any', '^(?!api).*$');
 });
 Route::middleware([
     'web',
@@ -41,6 +55,8 @@ Route::middleware([
     Route::get('/login', 'StoreView@index');
 
 
+
+
 });
 
  Route::prefix('api')->middleware([
@@ -48,7 +64,28 @@ Route::middleware([
   InitializeTenancyByDomain::class,
   PreventAccessFromCentralDomains::class
 ])->group(function(){
+  // Categories CRUD Routes
+  Route::resource('categories', 'CategoryController');
+
+  // Send Login Info
   Route::post('/login', 'LoginController@login')->name('login');
+
+  // Get Store Name
+  Route::get('/load', 'StoreView@loadStoreData');
+
+  // Load Products
+  Route::get('/load-products', 'ProductController@index');
+
+  Route::get('/load-category-products/{id}', 'ProductController@showbycategory');
+
+  // Get Hero Image
+  Route::get('herocustomizer', 'StoreCustomizer@getHero');
+
+
+  //Menu
+  Route::post('set-menu', [MenuController::class, 'setMenu']);
+  Route::get('get-menu', [MenuController::class, 'getMenu']);
+
 });
 
 Route::prefix('api')->middleware([
@@ -57,12 +94,17 @@ Route::prefix('api')->middleware([
     PreventAccessFromCentralDomains::class,
 ])->group(function () {
 
+  //Store Total Revenue
+    Route::get('total', 'StoreReport@revenue');
+
+    //Store Total Sales
+    Route::get('sales', 'StoreReport@sales');
+
+    //Store Total Orders
+      Route::get('total-orders', 'StoreReport@orders');
 
   Route::post('/logout', 'LoginController@logout')->name('logout');
 
-    Route::get('/load', 'StoreView@loadStoreData');
-    // Categories CRUD Routes
-      Route::resource('categories', 'CategoryController');
 
     // Categories Product Count
     Route::get('categories/count', 'CategoryController@getCount');
@@ -85,11 +127,7 @@ Route::prefix('api')->middleware([
     // Delete Attribute from Product Route
       Route::post('attributes/delete', 'ProductAttributeController@deleteAttribute');
 
-    // Add to cart Route
-      Route::post('cart/add', [
-        'uses' =>  'ShoppingController@store',
-        'as' => 'cart.add'
-      ]);
+
 
     // Product CRUD Routes
       Route::resource('products', 'ProductController');
@@ -97,12 +135,11 @@ Route::prefix('api')->middleware([
       // Product Image Upload Routes
       Route::post('upload', 'ProductImageController@upload');
 
-    // Cart data Route
-      Route::get('cart', 'ShoppingController@showItems');
 
       //Orders Management Routes
       Route::resource('orders', 'OrderController');
+      Route::get('orders/list', 'OrderController@list');
 
-      // Place Order Routes
-      Route::post('checkout', 'CheckoutController@placeoOrder');
+      Route::post('customizer', 'StoreCustomizer@appendHero');
+
 });

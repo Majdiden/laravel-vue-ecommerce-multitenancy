@@ -127,7 +127,7 @@ export default {
     }
   },
 
-  mounted(){
+  beforeMount(){
     this.$store.dispatch('tenant/loadStoreData'),
     window.addEventListener('scroll', this.updateScroll)
   },

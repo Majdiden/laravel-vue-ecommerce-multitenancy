@@ -20,10 +20,11 @@ class CreateStore extends Controller
         'id' => $request->sname
       ]);
       $store->domains()->create([
-        'domain' => $request->domain
+        'domain' => $request->domain.'.shops.test'
       ]);
 
       $store->save();
+
 
       tenancy()->initialize($store);
 
@@ -33,7 +34,8 @@ class CreateStore extends Controller
         'password' => Hash::make($request->password)
       ]);
 
-    return redirect(tenant_route($domain, 'welcome'));
+
+    return response($store->domain);
     }
 
     public function signup(Request $request)

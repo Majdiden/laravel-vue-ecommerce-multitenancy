@@ -75,6 +75,18 @@ class ProductController extends Controller
         return response()->json($product);
     }
 
+
+
+
+    public function showbycategory($id)
+    {
+
+        $products = Product::with('categories')->whereHas('categories', function($query) use ($id){
+          $query->where('category_id', $id);
+        })->get();
+        return response()->json($products);
+    }
+
     /**
      * Show the form for editing the specified resource.
      *
@@ -100,7 +112,7 @@ class ProductController extends Controller
       $product = $this->productRepository->updateProduct($params);
 
       if (!$product) {
-          return $this->responseRedirectBack('Error occurred while updating product.', 'error', true, true);
+          //  return $this->responseRedirectBack('Error occurred while updating product.', 'error', true, true);
       }
       return $product;
     }

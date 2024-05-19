@@ -11,6 +11,9 @@ window.Vue = require('vue');
 
 import router from './routes';
 import vuetify from './plugins/vuetify.js';
+import store from './store/index';
+import "@storefront-ui/vue/styles.scss";
+import { SfComponentName } from "@storefront-ui/vue";
 
 //import register from './components/Register.vue';
 /**
@@ -41,5 +44,6 @@ Vue.component(
 new Vue({
   el: '#app',
     router,
-    vuetify
+    vuetify,
+    store
 });

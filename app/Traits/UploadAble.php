@@ -28,6 +28,7 @@ trait UploadAble
             $name . "." . $file->getClientOriginalExtension(),
             $disk
         );
+
     }
 
     /**

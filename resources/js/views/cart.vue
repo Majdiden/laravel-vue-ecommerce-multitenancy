@@ -23,7 +23,7 @@
         </thead>
 
         <tbody>
-          <tr v-for="item in items" :key="item.modelId">
+          <tr v-for="item in items" :key="item.rowId">
             <td>
               {{item.name}}
             </td>
@@ -31,10 +31,10 @@
               {{item.price}}
             </td>
             <td>
-              <v-text-field solo type="number" :value="item.quantity" class="mt-6"></v-text-field>
+              <v-text-field solo type="number" :value="item.qty" class="mt-6"></v-text-field>
             </td>
             <td>
-              100
+              {{item.subtotal}}
             </td>
           </tr>
         </tbody>
@@ -51,7 +51,7 @@
             </v-row>
           </v-col>
             <v-row  justify="end">
-              <v-btn @click="placeOrder()">Place Order</v-btn>
+              <v-btn to="/checkout">Go to Checkout</v-btn>
             </v-row>
           </v-col>
         </v-row>
@@ -87,22 +87,18 @@ import {mapState} from 'vuex';
 }
     },
 
+    beforeMount(){
+
+      this.$store.dispatch('store/getCart')
+    },
+
     mounted(){
-      this.$store.dispatch('store/getCart'),
-
-      this.carts.forEach(cart => {
-          cart.items.forEach(item =>{
-            this.order.forEach(order => {
-                order.products.push(item)
-          })
-          this.items.push(item)
-        })
-
-      })
-      console.log(this.items)
+      this.items = this.carts.cartContent
     },
 
     methods: {
+
+
       placeOrder(){
         this.$store.dispatch('store/placeOrder', this.order[0])
       }
@@ -121,7 +117,7 @@ import {mapState} from 'vuex';
 <style scoped>
 
 .container {
-  margin-top: 120px;
+  margin-top: 160px;
   margin-bottom: 80px;
 }
 

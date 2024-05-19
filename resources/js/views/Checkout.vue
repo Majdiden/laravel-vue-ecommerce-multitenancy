@@ -31,11 +31,11 @@
               <v-textarea outlined desnse label="Notes" v-model="order.notes"></v-textarea>
             </v-col>
           </v-row>
-          <v-btn @click="placeOrder()" rounded color="#7367F0" width="250" class="white--text">Continue to payment</v-btn>
+          <v-btn @click="placeOrder()"  color="#000" width="250" class="white--text">Continue to payment</v-btn>
         </v-col>
 
         <v-col cols="4">
-          <v-card class="pa-7" color="#7367F0"  v-for="(cart, index) in carts" :key="index">
+          <v-card class="pa-7 mt-2" color="#7367F0" >
             <h2 class="white--text">Order Details</h2>
 
           <!--  <div class="items">
@@ -57,41 +57,41 @@
               </v-card>
             </div> -->
             <v-row>
-              <v-col cols="9">
+              <v-col cols="8">
                 <h5 class="white--text">Subtotal : </h5>
               </v-col>
-              <v-col cols="3">
-              <h6 class="white--text">  {{cart.subtotal}}</h6>
+              <v-col cols="4">
+              <h6 class="white--text">  {{carts.subtotal}} SDG</h6>
               </v-col>
             </v-row>
             <v-row>
-              <v-col cols="9">
+              <v-col cols="8">
                 <h5 class="white--text">Delivery : </h5>
               </v-col>
-              <v-col cols="3">
-                <h6 class="white--text">  {{cart.shippingCharges}}</h6>
+              <v-col cols="4">
+                <h6 class="white--text">  {{carts.shippingCharges}} SDG</h6>
               </v-col>
             </v-row>
             <v-row>
-              <v-col cols="9">
+              <v-col cols="8">
                 <h5 class="white--text">Tax : </h5>
               </v-col>
-              <v-col cols="3">
-                <h6 class="white--text">  {{cart.tax}}</h6>
+              <v-col cols="4">
+                <h6 class="white--text">  {{carts.tax}} SDG</h6>
               </v-col>
             </v-row>
             <v-text-field color="white" dense outlined label="Copoun Code"></v-text-field>
-            <v-row justify="end">
-              <v-btn rounded medium>Apply</v-btn>
+            <v-row justify="end" class="mb-7 mr-1 mt-n3">
+              <v-btn  small >Apply</v-btn>
 
             </v-row>
             <v-divider></v-divider>
             <v-row>
-              <v-col cols="9">
+              <v-col cols="8">
                 <h5 class="white--text">Discount % : </h5>
               </v-col>
-              <v-col cols="3">
-              <h6 class="white--text">  {{cart.discountPercentage}}</h6>
+              <v-col cols="4">
+              <h6 class="white--text">  {{carts.discountPercentage}} SDG</h6>
               </v-col>
             </v-row>
             <v-row>
@@ -99,7 +99,7 @@
                 <h4 class="white--text">Total to pay : </h4>
               </v-col>
               <v-col cols="4">
-              <h5 class="white--text">  {{cart.total}}</h5>
+              <h5 class="white--text">  {{carts.total}} SDG</h5>
               </v-col>
             </v-row>
           </v-card>
@@ -126,20 +126,17 @@ export default{
     }
   },
 
-  mounted(){
+  beforeMount(){
     this.$store.dispatch('store/getCart')
-    this.getCartItems()
+
+  },
+
+  mounted(){
     console.log(this.carts)
   },
 
   methods: {
-    getCartItems(){
-      this.carts.forEach(cart => {
-        this.cart.items.forEach(item => {
-          this.items.push(item)
-        })
-      })
-    },
+
 
     placeOrder(){
       this.$store.dispatch('store/placeOrder', this.order)
@@ -159,7 +156,7 @@ export default{
 
 <style scoped>
 .container {
-  margin-top: 120px;
+  margin-top: 160px;
   margin-bottom: 80px;
 }
 

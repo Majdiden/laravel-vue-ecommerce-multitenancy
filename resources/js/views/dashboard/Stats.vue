@@ -1,5 +1,5 @@
 <template>
-  <v-container class="ma-12 mx-1">
+  <v-container class="ma-2 mx-1 main">
 
     <v-layout row wrap justify-space-between class="">
 
@@ -7,7 +7,7 @@
         <v-card flat class="pa-4">
           <v-row>
           <v-col cols="8">
-            <div class="display-1">5.6K</div>
+            <div class="display-1">{{totalRevenue}}K</div>
             <div class="subheading grey--text font-weight-light">Total Revenue</div>
 
           </v-col>
@@ -21,7 +21,7 @@
         <v-card flat class="pa-4">
           <v-row>
             <v-col cols="8">
-                <div class="display-1">473</div>
+                <div class="display-1">{{totalSales}}</div>
                 <div class="subheading grey--text font-weight-light">Total Sales</div>
             </v-col>
 
@@ -36,7 +36,7 @@
           <v-card flat class="pa-4">
             <v-row>
               <v-col cols="8">
-                <div class="display-1">139</div>
+                <div class="display-1">{{totalOrders}}</div>
                 <div class="subheading grey--text font-weight-light">Orders</div>
               </v-col>
 
@@ -87,15 +87,15 @@
             <v-row>
             <v-col cols="12">
             <v-card-title>Goal Overview</v-card-title>
-            <v-card-subtitle>Achieving 600 Sales</v-card-subtitle>
+            <v-card-subtitle>Achieving 50 Sales</v-card-subtitle>
             <v-progress-circular
             size="150"
-             value="70"
+             :value="goal"
               color="#7367F0"
               width="7"
                rotate="70"
                 class="ml-12 mt-5 mb-5">
-                <span class="display-2">70%</span>
+                <span class="display-2">{{goal}}%</span>
               </v-progress-circular>
             </v-col>
             </v-row>
@@ -110,12 +110,31 @@
 
 <script>
 // @ is an alias to /src
+import {mapState} from 'vuex';
 
 export default {
   name: 'Stats',
   data(){
     return{
       value: [0, 2, 5, 9, 5, 10, 3, 5, 0, 0, 1, 8, 2, 9, 0]
+    }
+  },
+
+  beforeMount(){
+    this.$store.dispatch('tenant/loadStoreRevenue')
+    this.$store.dispatch('tenant/loadStoreSales')
+    this.$store.dispatch('tenant/loadStoreTotalOrders')
+  },
+
+  computed: {
+    ...mapState('tenant', [
+      'totalRevenue',
+      'totalSales',
+      'totalOrders'
+    ]),
+
+    goal: function(){
+      return (this.totalSales * 100)/50;
     }
   }
 
@@ -126,5 +145,8 @@ export default {
 ion-icon {
   font-size: 50px;
   color: #7367F0;
+}
+.main{
+  height: 100vh;
 }
 </style>

@@ -2,8 +2,11 @@
 
 namespace App\Repositories;
 
+use App\Tenant;
 use App\Product;
+use App\Attribute;
 use App\ProductImage;
+use App\ProductAttribute;
 use App\Traits\UploadAble;
 use Illuminate\Http\UploadedFile;
 use App\Contracts\ProductContract;
@@ -40,6 +43,18 @@ class ProductRepository implements ProductContract
         }
       }
 
+      public function findProductByCategory(int $id)
+      {
+        try {
+          return $this->model->with('categories')->whereHas('categories', function($query) use ($id){
+            $query->where('id', $id);
+          });
+        }
+        catch(ModelNotFoundException $e) {
+          throw new ModelNotFoundException($e);
+        }
+      }
+
       public function createProduct(array $params)
       {
         try {
@@ -61,7 +76,7 @@ class ProductRepository implements ProductContract
             $image = $this->uploadOne($params['images'], 'products/'.$params['name']);
 
             $productImage = new ProductImage([
-              'full' => $image
+              'full' => tenant_asset($image)
             ]);
 
             $product->images()->save($productImage);
@@ -70,9 +85,39 @@ class ProductRepository implements ProductContract
 
 
           if($collection->has('categories')){
-            $product->categories()->sync($params['categories']);
+            $cats = json_decode($params['categories']);
+            foreach($cats as $category){
+
+            $product->categories()->sync($category);
           }
-          return $product;
+
+        }
+
+
+
+         if($collection->has('attributes')){
+
+           $attr = json_decode($params['attributes']);
+           foreach($attr as $assignedAttr){
+             foreach($assignedAttr->value as $value){
+             $product->attributes()->create([
+               'attribute_id' => $assignedAttr->name,
+               'value' => $value,
+               'price' => $assignedAttr->price
+             ])->save();
+           }
+            /* ProductAttribute::create([
+               'attribute_id' => $assignedAttr->name,
+               'value' => $assignedAttr->value,
+               'price' => $assignedAttr->price,
+               'product_id' => json_encode($product->id)
+             ]); */
+
+           }
+
+          }
+
+          return response(array('message' => 'Product Created Successfully.', 'data' => $product), 200);
         }
 
           catch (QueryException $exception) {
@@ -99,7 +144,17 @@ class ProductRepository implements ProductContract
            $product->categories()->sync($params['categories']);
        }
 
-       return $product;
+
+          foreach($params['attributes'] as $attr){
+
+            $product->attributes()->firstOrCreate(['value' => $attr['value'], 'attribute_id' => $attr['attribute_id']]);
+
+        }
+
+
+
+       return $params;
+
    }
 
 
@@ -108,10 +163,11 @@ class ProductRepository implements ProductContract
        $product = $this->findProductById($id);
     $images = ProductImage::where('product_id', $id)->first();
 
-      if ($images->full != null) {
+      if ($images) {
          $this->deleteOne($images->full);
+         $images->delete();
        }
-       $images->delete();
+
        $product->delete();
 
        return $product;

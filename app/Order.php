@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use App\User;
 use App\OrderItem;
+use Carbon;
 
 class Order extends Model
 {
@@ -21,4 +22,5 @@ class Order extends Model
     public function items(){
       return $this->hasMany(OrderItem::class);
     }
+    
 }

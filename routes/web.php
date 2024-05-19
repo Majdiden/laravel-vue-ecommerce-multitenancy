@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', 'SinglePageController@index');
+Route::get('/{any}', 'SinglePageController@index')->where('any', '.*');
 Route::get('/login', 'SinglePageController@login');
 
 

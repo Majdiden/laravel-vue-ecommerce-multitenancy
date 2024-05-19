@@ -7,6 +7,15 @@ import axios from 'axios'
 
 Vue.use(Vuex, axios)
 
+axios.interceptors.response.use(
+  function(response) { return response;},
+  function(error) {
+      // handle error
+      if (error.response) {
+          alert(error.response.data.message)
+      }
+  });
+
 
 export default new Vuex.Store({
      //plugins: [vuexLocalStorage.plugin],
@@ -16,6 +25,12 @@ export default new Vuex.Store({
               namespaced: true,
                     state: () =>  ({
                       storename: null,
+                      totalRevenue: 0,
+                      totalSales: 0,
+                      totalOrders: 0,
+                      hero_message: null,
+                      hero_image: [],
+                      menu: null
                     }),
 
                     getters: {
@@ -26,6 +41,30 @@ export default new Vuex.Store({
                       StoreData(state, data) {
                         state.storename = data
                         console.log(data)
+                      },
+                      TOTAL_REVENUE(state, data){
+                        state.totalRevenue = data
+                      },
+                      TOTAL_SALES(state, data){
+                        state.totalSales = data
+                      },
+                      TOTAL_ORDERS(state, data){
+                        state.totalOrders = data
+                      },
+                      HERO_MESSAGE(state, data){
+                        state.hero_message = data
+                        console.log(data)
+                      },
+                      SET_MENU(state, data){
+                        console.log(data)
+                      },
+                      GET_MENU(state, data){
+                        state.menu = data
+                        console.log(state.menu)
+                      },
+                      HERO_IMAGE(state, data){
+                        state.hero_image = data
+                        console.log(state.hero_image)
                       }
                     },
 
@@ -34,7 +73,7 @@ export default new Vuex.Store({
                       createStore({commit}, StoreData) {
                         axios
                         .post('/api/create', StoreData)
-                        .then((response) => {console.log(response.data);})
+                        .then((response) => {window.location = 'http://'+response.data})
                         .catch(error => console.log(error.response.data))
                       },
                       Signup({commit}, StoreData) {
@@ -59,13 +98,55 @@ export default new Vuex.Store({
                         .post('/api/logout')
                         .then(response => {
                                             localStorage.removeItem('token');
-                                              route.push({name: 'login'}); })
+                                              router.push({name: 'login'}); })
                         .catch(error => console.log(error.response.data))
                       },
                       loadStoreData({commit}) {
                         axios
                         .get('/api/load')
                         .then(response => {commit('StoreData', response.data)})
+                        .catch(error => console.log(error.response.data))
+                      },
+                      loadStoreRevenue({commit}){
+                        axios
+                        .get('/api/total')
+                        .then(response => {commit('TOTAL_REVENUE', response.data)})
+                        .catch(error => console.log(error.response.data))
+                      },
+                      loadStoreSales({commit}){
+                        axios
+                        .get('/api/sales')
+                        .then(response => {commit('TOTAL_SALES', response.data)})
+                        .catch(error => console.log(error.response.data))
+                      },
+                      loadStoreTotalOrders({commit}){
+                        axios
+                        .get('/api/total-orders')
+                        .then(response => {commit('TOTAL_ORDERS', response.data)})
+                        .catch(error => console.log(error.response.data))
+                      },
+                      StoreCustomizer({commit}, Hero){
+                        axios
+                        .post('/api/customizer', Hero)
+                        .then(response => {commit('HERO_MESSAGE', response.data)})
+                        .catch(error => console.log(error.response.data))
+                      },
+                      SetMenu({commit}, Menu){
+                        axios
+                        .post('/api/set-menu', Menu)
+                        .then(response => {commit('SET_MENU', response.data)})
+                        .catch(error => console.log(error.response.data))
+                      },
+                      GetMenu({commit}){
+                        axios
+                        .get('/api/get-menu')
+                        .then(response => {commit('GET_MENU', response.data)})
+                        .catch(error => console.log(error.response.data))
+                      },
+                      StoreHero({commit}){
+                        axios
+                        .get('/api/herocustomizer')
+                        .then(response => {commit('HERO_IMAGE', response.data)})
                         .catch(error => console.log(error.response.data))
                       }
                     }
@@ -77,12 +158,16 @@ export default new Vuex.Store({
 
               state: () => ({
                 products: [],
+                categoryProducts: null,
                 attributes: null,
                 crntprdct: null,
+                productmessage: null,
                 crntattr: null,
                 product: '',
-                carts: [],
-                cats: []
+                carts: null,
+                cartCount: 0,
+                cats: [],
+                orders: []
               }),
 
               getters: {
@@ -115,7 +200,12 @@ export default new Vuex.Store({
                   console.log(state.attributes)
                 },
                 CURRENT_PRODUCT(state, data){
-                  state.crntprdct = data
+                  state.crntprdct = data.data
+                  state.productmessage = data.message
+                },
+                CURRENT_CATEGORY_PRODUCTS(state, data){
+                  state.categoryProducts = data
+                  console.log(state.categoryProducts)
                 },
                 CURRENT_ATTRIBUTE(state, data){
                 state.crntattr = data
@@ -134,13 +224,23 @@ export default new Vuex.Store({
                   state.products.unshift(newProduct)
                 },
                 GET_CART(state, data) {
-                  state.carts.push(data)
+                  state.carts = data
 
                 },
+
+                CART_COUNT(state, data){
+                    state.cartCount = data
+                    console.log(state.cartCount)
+                },
+
                 GET_CAT(state, data){
                   state.cats = data
                   console.log(state.cats)
 
+                },
+                GET_ORDERS(state, data){
+                  state.orders = data
+                  console.log(state.orders)
                 }
               },
 
@@ -148,7 +248,7 @@ export default new Vuex.Store({
               actions: {
                  loadProducts({commit}){
                    axios
-                   .get('/api/products')
+                   .get('/api/load-products')
                    .then(response => {commit('SET_PRODUCTS', response.data)})
                    .catch(error => console.log(error.response.data))
                  },
@@ -156,6 +256,11 @@ export default new Vuex.Store({
                  loadProduct({commit}, id){
                    axios.get('/api/products/'+ id)
                    .then(response =>  {commit('GET_PRODUCT', response.data)})
+                   .catch(error => console.log(error.response.data))
+                 },
+                 loadCategoryProducts({commit}, id){
+                   axios.get('/api/load-category-products/'+id)
+                   .then(response =>  {commit('CURRENT_CATEGORY_PRODUCTS', response.data)})
                    .catch(error => console.log(error.response.data))
                  },
 
@@ -169,6 +274,16 @@ export default new Vuex.Store({
                  updateProduct({commit}, Product){
                    axios
                    .put('/api/products/' + Product.id, Product)
+                   .then((response) => {
+
+                       console.log(response.data);
+
+                     })
+                     .catch(error => console.log(error.response.data))
+                 },
+                 updateOrder({commit}, Order, Status){
+                   axios
+                   .put('/api/orders/' + Order.id , Order, Status)
                    .then((response) => {
 
                        console.log(response.data);
@@ -207,7 +322,8 @@ export default new Vuex.Store({
 
                  addCart({commit}, item) {
                    axios
-                   .post('/api/cart/add', item)
+                   .post('/cart/add', item)
+                   .then(this.state.cartCount++)
                    .then(response => response.data.items)
                    .catch(error => console.log(error.response.data))
                  },
@@ -226,14 +342,21 @@ export default new Vuex.Store({
 
                  getCart({commit}){
                    axios
-                   .get('/api/cart')
+                   .get('/cart')
                    .then(response => {commit('GET_CART', response.data)})
+                   .catch(error => console.log(error.response.data))
+                 },
+
+                 getCartCount({commit}){
+                   axios
+                   .get('/cart/count')
+                   .then(response => {commit('CART_COUNT', response.data)})
                    .catch(error => console.log(error.response.data))
                  },
 
                  placeOrder({commit}, order){
                    axios
-                   .post('/api/checkout', order)
+                   .post('/checkout', order)
                    .then(response => console.log(response.data))
                    .catch(error => console.log(error.response.data))
                  },
@@ -242,6 +365,13 @@ export default new Vuex.Store({
                    axios
                    .get('/api/categories')
                    .then(response => {commit('GET_CAT', response.data)})
+                   .catch(error => console.log(error.response.data))
+                 },
+
+                 getOrders({commit}){
+                   axios
+                   .get('/api/orders')
+                   .then(response => {commit('GET_ORDERS', response.data)})
                    .catch(error => console.log(error.response.data))
                  },
 

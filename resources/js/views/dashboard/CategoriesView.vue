@@ -1,6 +1,11 @@
 <template>
   <div class="all">
-    <v-btn rounded outlined color="#7367F0" class="ml-12 mb-8" @click="showDrawer()">ADD NEW</v-btn>
+    <v-row>
+      <v-col cols="12" class="d-flex flex-row justify-end">
+        <v-btn color="#7367F0" class=" mr-12 mb-8 white--text" @click="showDrawer()">ADD NEW</v-btn>
+
+      </v-col>
+    </v-row>
     <side-panel :drawer="drawer"></side-panel>
     <v-row  class="row header mx-12">
       <v-col cols="2">
@@ -62,7 +67,7 @@ import {mapState} from 'vuex';
       'side-panel' : SidePanel
     },
 
-    mounted(){
+    beforeMount(){
       this.$store.dispatch('store/getCat')
 
     },

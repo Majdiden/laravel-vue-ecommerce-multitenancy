@@ -12,4 +12,6 @@ interface OrderContract
   public function findOrderByNumber($orderNumber);
 
   public function storeOrderDetails(array $params);
+
+  public function updateOrder(array $params);
 }

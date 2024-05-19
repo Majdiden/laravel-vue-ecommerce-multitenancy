@@ -11,13 +11,13 @@
         <h1 class="heading black--text font-weight-bold text-uppercase display-3"><span class="font-weight-light">PROMOTE,</span> SELL<br> <span class="font-weight-light">and</span> <span class="ls">MEASURE</span></h1>
       </v-flex>
 
-      <v-flex class="r-panel md6 align-self-center pa-6">
+      <v-flex class="r-panel md6 align-self-center">
         <h1 class="heading black--text text-center text-uppercase mt-7">Stores</h1>
 
         <v-row class="justify-center">
           <v-col cols="7">
 
-            <h3 class="heading black--text text-center text-uppercase mb-7">Login to you store</h3>
+            <h3 class="heading black--text text-center text-uppercase mb-7">Login to your store</h3>
 
 
                             <v-form @submit="Vform" class="" ref="form lazy-validation">
@@ -117,7 +117,7 @@ methods:
     },
 
     CreateStore(StoreData){
-      this.$store.dispatch('tenant/Login', StoreData)
+      this.$store.dispatch('tenant/Login', this.StoreData)
       console.log(this.StoreData)
     }
 }
@@ -132,7 +132,7 @@ methods:
 }
 
 .l-panel {
-  height: 625px;
+  height: 100vh;
 }
 
 .l-panel h1 {
@@ -142,7 +142,9 @@ methods:
 
 .r-panel {
   height: 100vh;
-    overflow-y: none;
+  position: relative;
+  padding: 100px 0;
+  overflow-y: none;
 }
 
 .ls {

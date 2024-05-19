@@ -59,6 +59,14 @@ class OrderController extends Controller
         return response()->json($order);
     }
 
+
+
+    public function list()
+    {
+        $orders = Order::all();
+        return response()->json($orders);
+    }
+
     /**
      * Show the form for editing the specified resource.
      *
@@ -77,9 +85,12 @@ class OrderController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        $params = $request->all();
+        $order = $this->orderRepository->updateOrder($params);
+
+        return response()->json($order);
     }
 
     /**

@@ -17,7 +17,7 @@
         <v-row class="justify-center">
           <v-col cols="7">
 
-            <h3 class="heading black--text text-center text-uppercase mb-7">Register your store</h3>
+            <h3 class="heading black--text text-center text-uppercase mb-7">Create your store</h3>
 
             <v-stepper v-model="el" class="stepper">
               <v-stepper-items>
@@ -33,7 +33,7 @@
                   <v-row class="justify-center">
 
                     <v-col cols="9">
-                      <v-btn block large depressed rounded type="submit" @click="validate, loader = 'loading1', el = 2">Next</v-btn>
+                      <v-btn block large depressed type="submit" @click="validate, loader = 'loading1', el = 2">Next</v-btn>
                     </v-col>
                   <!--  <v-col cols="12" class=" mt-0 pt-0">
                       <v-btn block large depressed rounded class="teal accent-3" type="submit"  :loading="loading2" @click="loader = 'loading2'">LOGIN USING GOOGLE ACCOUNT</v-btn>
@@ -47,17 +47,17 @@
                 <p>Store details</p>
                 <v-form @submit="Vform" class="" ref="form lazy-validation">
                   <v-text-field color="teal accent-3" label="Store Name" type="text" v-model="StoreData.sname" outlined required></v-text-field>
-                  <v-text-field color="teal accent-3" label="Domain Name" type="text" v-model="StoreData.domain" outlined required></v-text-field>
+                  <v-text-field color="teal accent-3" label="Domain Name" type="text" suffix=".shops.test" v-model="StoreData.domain" outlined required></v-text-field>
 
                   <v-checkbox color="teal accent-3"  :rules="[v => !!v ]" label="I agree to the Privacy Policy, Terms & Conditions"></v-checkbox>
 
                   <v-row class="justify-center">
 
                     <v-col cols="4">
-                      <v-btn block large depressed rounded type="submit" @click="validate, loader = 'loading1', el = 1;">Back</v-btn>
+                      <v-btn block large depressed  type="submit" @click="validate, loader = 'loading1', el = 1;">Back</v-btn>
                     </v-col>
                     <v-col cols="8">
-                      <v-btn block large depressed rounded type="submit" :loading="loading1" @click="validate, loader = 'loading1', CreateStore();">Create Store</v-btn>
+                      <v-btn block large depressed  type="submit" :loading="loading1" @click="validate, loader = 'loading1', CreateStore();">Create Store</v-btn>
                     </v-col>
                   <!--  <v-col cols="12" class=" mt-0 pt-0">
                       <v-btn block large depressed rounded class="teal accent-3" type="submit"  :loading="loading2" @click="loader = 'loading2'">LOGIN USING GOOGLE ACCOUNT</v-btn>

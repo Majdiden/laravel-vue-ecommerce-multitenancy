@@ -20,6 +20,6 @@
         <div id="app">
           <register></register>
         </div>
-        <script src="{{ asset('js/app.js') }}"></script>
+        <script src="{{ global_asset('js/app.js') }}"></script>
     </body>
 </html>

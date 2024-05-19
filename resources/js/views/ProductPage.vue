@@ -1,15 +1,16 @@
 <template>
-    <v-container>
+    <div>
+
       <main-nav/>
-      <v-row class="row">
+      <v-row class="all">
         <v-col cols="7">
           <div class="product-images">
-      <!--     <img src="../../../public/storage/products/xVgUVUDbt0FtW56N02dy8ffF6.webp"/> -->
+              <img :src="product.images[0].full"/>
           </div>
         </v-col>
         <v-col cols="5">
           <v-row class="product-name my-12">
-            <h1>{{product.name}}</h1>
+            <h1 @click="loadattr()">{{product.name}}</h1>
           </v-row>
           <v-row class="product-category mt-n12 mb-12">
             <template v-for="(category, index) in product.categories">
@@ -17,19 +18,24 @@
               <p  :key="category.id"> {{category.name}}  </p>
             </template>
           </v-row>
-          <v-row class="product-price mt-n4">
-            <h5>SDG {{product.price}}</h5>
+          <v-row class="pr-5">
+            <p>{{product.description}}</p>
+          </v-row>
+          <v-row class="product-price mb-3">
+            <h3>SDG {{product.price}}</h3>
           </v-row>
           <v-divider></v-divider>
           <v-row class="product-info">
-            <div class="product-attrs d-flex flex-column">
-
-              <p>SELECT YOUR COLOR</p>
+            <div class="product-attrs d-flex flex-column mt-6">
+              <p>Select Your Color</p>
               <div class="colors d-flex">
-            <template v-for="attribute in product.attributes">
-                    <p>{{attribute.attribute_id}}</p>
-                    <p>{{attribute.value}}</p>
-              </template>
+              <template v-for="attr in attrs">
+                    <div v-if="attr.name == 'color'" class="color" :style="{backgroundColor: attr.values}"></div>
+                  </template>
+                  <p>Select Your Size</p>
+              <div v-for="attr in attrs">
+                    <p v-if="attr.name == 'size'">{{attr.values}}</p>
+                  </div>
             </div>
 
               <v-col cols="4">
@@ -39,14 +45,15 @@
               <v-divider></v-divider>
 
               <div class="actions mt-8">
-                <v-btn @click="AddToCart(item)" depressed class="white--text" color="#7367F0">ADD TO CART</v-btn>
+                <v-btn @click="AddToCart(item)" depressed class="white--text" color="#000">ADD TO CART</v-btn>
               </div>
             </div>
 
           </v-row>
         </v-col>
       </v-row>
-    </v-container>
+
+    </div>
 </template>
 
 <script>
@@ -59,12 +66,18 @@ export default {
       id: this.$route.params.id,
       item: {
         id: this.$route.params.id
-      }
+      },
+
+      attrs: []
     }
   },
 
-  mounted(){
+  beforeMount(){
     this.init()
+  },
+
+  created(){
+
   },
 
   methods: {
@@ -73,7 +86,20 @@ export default {
     },
 
     init(){
-      this.$store.dispatch('store/loadProduct', this.item.id)
+       this.$store.dispatch('store/loadProduct', this.item.id)
+    },
+
+    loadattr(){
+
+            this.product.attributes.forEach(attribute => {
+            if(attribute.attribute_id = attribute.attribute.id){
+              this.attrs.push({
+                name: attribute.attribute.code,
+                values: [attribute.value]
+              })
+            }
+            })
+            console.log(this.attrs)
     }
   },
 
@@ -90,6 +116,10 @@ export default {
 
 <style scoped>
 
+.all{
+margin-top: 50px;
+}
+
 .product-images{
 height: 100vh;
 background-size: contain;
@@ -100,9 +130,12 @@ img{
   margin-top: 50px;
   width: 450px;
 }
-.colors{
+.color{
   display: inline;
-
+  width: 20px;
+  height: 20px;
+  border-radius: 80%;
+  margin-right: 5px;
 }
 .color1{
   width: 25px;
@@ -136,8 +169,6 @@ img{
   width: 100%;
 }
 
-.row{
-  margin-top: 100px;
-}
+
 
 </style>

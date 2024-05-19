@@ -1,30 +1,32 @@
 <template >
   <div class="products-table" >
 
-  <v-container class="ma-12 mx-2" >
-    <v-btn outlined rounded text color="#7367F0">
-      <v-icon size="20" left>mdi-filter-outline</v-icon>
-      <span class="subtitle-2">Filter</span></v-btn>
-      <v-btn outlined rounded text color="#7367F0">
-        <v-icon size="20" left>mdi-export</v-icon>
-        <span class="subtitle-2">Export</span></v-btn>
-    <v-card flat class="pa-7 mt-5" elevation="6">
+  <v-container class=" mx-0" >
+    <v-row>
+      <v-col cols="6" class="d-flex flex-row align-end">
+        <v-btn outlined text color="#7367F0">
+          <v-icon size="20" left>mdi-export</v-icon>
+          <span class="subtitle-2">Export</span></v-btn>
+      </v-col>
 
-      <v-row class="mx-3" align="center">
-            <v-btn rounded class="white--text caption" color="#7367F0" medium>Quick Edit</v-btn>
+      <v-col cols="6"  class="d-flex flex-row align-end">
+        <v-text-field style=" top:29px;" dense outlined label="Search" v-model="search"></v-text-field>
+        <v-btn class="ml-3" outlined  text color="#7367F0">
+          <v-icon size="20" left>mdi-filter-outline</v-icon>
+          <span class="subtitle-2">Filter</span></v-btn>
 
+      </v-col>
       </v-row>
-
-
-
+    <v-card flat class="pa-7 mt-5">
       <v-data-table
         v-model="selected"
         :headers="headers"
         :items="products"
+        :search="search"
         item-key="id"
-        item-class="item"
+        :item-class="rowClass"
         show-select
-        class="mt-12 p-tabel"
+        class="p-tabel"
         >
         <template v-slot:item.categories="{item}">
                 <td v-for="category in item.categories" :key="category.id">
@@ -40,7 +42,7 @@
      <ion-icon
         name="pencil-outline"
        class="mr-2 material-icons"
-       @click="editItem(item)"
+       @click="editItem(item, item.attributes)"
 
      >
        edit
@@ -75,14 +77,21 @@
                 label="Category"
                 multiple
 
+
               >
               </v-select>
+            </v-col>
+            <v-col cols="6">
+              <v-text-field label="Attributes" v-for="attribute in Product.attributes" :key="attribute.name" v-model="attribute.value"></v-text-field>
             </v-col>
             <v-col cols="6">
               <v-text-field label="Quantity" type="number" color="purple" v-model="Product.quantity"  required></v-text-field>
             </v-col>
             <v-col cols="6">
               <v-text-field label="Price" type="number" color="purple" v-model="Product.price"  required></v-text-field>
+            </v-col>
+            <v-col cols="6">
+              <v-text-field label="Sale Price" type="number" color="purple" v-model="Product.sale_price"></v-text-field>
             </v-col>
             <v-col cols="6">
               <v-text-field label="Sold" type="number" color="purple" v-model="Product.sold"  required></v-text-field>
@@ -117,7 +126,7 @@
         </v-container>
         <v-row align="start" justify="center">
           <v-col cols="5">
-            <v-btn type="submit" @click="updateProduct(Product)" tile >Update Product</v-btn>
+            <v-btn type="submit" @click="updateProduct()" tile >Update Product</v-btn>
           </v-col>
         </v-row>
       </v-card-text>
@@ -137,6 +146,7 @@ export default {
   data(){
     return{
                 selected: [],
+                search: '',
           headers: [
               {
                 text: 'Product',
@@ -159,7 +169,13 @@ export default {
             id: this.editedIndex,
             name: '',
             categories: [],
+            attributes: [{
+              name: 'Color',
+              value: 'Blue',
+              price: 200
+            }],
             price: '',
+            sale_price: '',
             total: '',
             sold: '',
             remaining: '',
@@ -171,7 +187,7 @@ export default {
     }
   },
 
-  mounted(){
+  beforeMount(){
     this.$store.dispatch('store/loadProducts'),
     this.$store.dispatch('store/getCat'),
     this.items = this.products
@@ -180,15 +196,29 @@ export default {
   methods: {
     editItem (item) {
         this.editedIndex = this.products.indexOf(item)
-        this.Product = Object.assign({}, item)
+        this.Product = Object.assign({}, item, item.attributes)
         this.dialog = true
+        console.log(this.selected)
       },
-      updateProduct(Product){
-        this.$store.dispatch('store/updateProduct', Product)
+      updateProduct(){
+        this.$store.dispatch('store/updateProduct', this.Product)
 
       },
       deleteProduct(id){
-        this.$store.dispatch('store/deleteProduct', id)
+        if(this.selected){
+          this.selected.forEach(product => {
+            this.$store.dispatch('store/deleteProduct', product.id)
+          })
+        } else{
+
+          this.$store.dispatch('store/deleteProduct', id)
+        }
+      },
+
+      //appends a class to rows in .v-data-table element
+      rowClass(item){
+        const rowClass = 'rowitem'
+        return rowClass;
       }
 
     //  pushCategories(){
@@ -225,15 +255,16 @@ export default {
 </script>
 
 <style scoped>
+
+
 $checkbox{
   border-color: white;
 }
 .products-table{
+  padding: 20px;
   height: 100vh;
 }
-.tar{
-  padding-top: 500px;
-}
+
 ion-icon{
   cursor: pointer;
   font-size: 19px;
@@ -244,5 +275,6 @@ ion-icon{
 ion-icon.trash{
   color: red;
 }
+
 
 </style>

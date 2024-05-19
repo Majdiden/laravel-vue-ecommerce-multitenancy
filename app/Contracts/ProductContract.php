@@ -12,6 +12,8 @@ interface ProductContract
 
   public function findProductById(int $id);
 
+  public function findProductByCategory(int $id);
+
   public function createProduct(array $params);
 
   public function updateProduct(array $params);

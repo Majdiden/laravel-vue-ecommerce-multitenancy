@@ -18,6 +18,8 @@ class ProductAttribute extends Model
   */
   protected $fillable = ['attribute_id', 'product_id', 'value', 'quantity', 'price'];
 
+  protected $with = ['attribute:id,code'];
+
 
  /**
   * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

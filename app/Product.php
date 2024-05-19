@@ -3,7 +3,6 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Freshbitsweb\LaravelCartManager\Traits\Cartable;
 use App\ProductImage;
 use App\Category;
 use App\ProductAttribute;
@@ -11,10 +10,9 @@ use App\ProductAttribute;
 
 class Product extends Model
 {
-  use Cartable;
-  
+
     protected $fillable = [
-      'name', 'sku', 'description', 'quantity', 'price', 'status', 'featured'
+      'name', 'sku', 'description', 'quantity', 'price', 'sale_price', 'status', 'featured'
     ];
 
     protected $with = ['categories', 'attributes', 'images'];
